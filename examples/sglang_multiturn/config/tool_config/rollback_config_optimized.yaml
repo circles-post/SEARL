@@ -1,0 +1,69 @@
+# Rollback Configuration - OPTIMIZED VERSION
+# 基于日志分析的优化配置
+# 错误率: 17.27% | 重试成功率: 47.67% | 调整率: 23.90%
+#
+# 优化策略：
+# 1. 减少重试次数（避免无效重试）
+# 2. 只重试关键错误类型
+# 3. 提高模型质量，减少源头错误
+
+rollback:
+  # 启用 rollback（保持）
+  enable_rollback: true
+
+  # ⚠️ 优化1: 减少重试次数 3 -> 2
+  # 原因: 24.3%的批次用尽3次重试仍失败，说明问题无法通过重试解决
+  # 减少重试可以节省计算资源，让训练更快完成
+  max_retries: 2
+
+  # Retry策略保持 batch_redo
+  retry_strategy: "batch_redo"
+
+  # ⚠️ 优化2: 只重试可能随机失败的错误
+  # 移除: NameError, SyntaxError, TypeError, ValueError, AttributeError
+  # 原因: 这些是代码质量问题，重试无法解决（占错误的87.4%）
+  # 保留: 环境/工具相关错误（可能是暂时性的）
+  retry_on_errors:
+    - "ImportError"        # 可能是依赖加载问题
+    - "worker_timeout"     # 可能是资源竞争
+    - "queue_timeout"      # 可能是队列拥堵
+    - "internal_error"     # 工具内部问题
+    - "RuntimeError"       # 运行时异常
+    - "TimeoutError"       # 超时可能是临时的
+
+  # ⚠️ 新增: 代码质量错误直接惩罚，不重试
+  # 这些错误会被记录但不触发 rollback
+  no_retry_errors:
+    - "NameError"          # 30.3% - 变量未定义
+    - "SyntaxError"        # 27.4% - 语法错误
+    - "TypeError"          # 13.0% - 类型错误
+    - "ValueError"         # 8.3% - 值错误
+    - "AttributeError"     # 8.4% - 属性错误
+
+# 工具配置
+tool_utils:
+  class_name: "ToolUtilsRollback"
+  rollback_config: ${rollback}
+
+  # 标准配置
+  prompt_length: 4096
+  response_length: 2596
+  tool_response_length: 2048
+  max_turns: 6
+  stop: ["<|im_end|>"]
+
+# ⚠️ 优化3: 增强代码生成质量的 Prompt 建议
+# 在你的 system prompt 中添加：
+code_quality_prompt: |
+  When generating code:
+  1. Always check variable names before using them
+  2. Verify all imports are available
+  3. Use type hints to avoid type errors
+  4. Handle edge cases and validate inputs
+  5. Test code logic before submitting
+
+# ⚠️ 优化4: 添加惩罚机制（在 reward 计算中）
+# 建议在 envs/base.py 的 compute_score 中：
+# - NameError/SyntaxError/TypeError: reward -= 0.5
+# - 其他错误: reward -= 0.2
+# - 成功执行: reward += 根据结果计算

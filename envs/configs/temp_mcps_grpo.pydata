@@ -1,0 +1,8 @@
+[
+    {'mcpServers': {
+        'temp_created_mcps': {
+            'command': 'python3',
+            'args': ['envs/tools/invented_tools/temp_tool_list.py']
+        },
+    }}
+]

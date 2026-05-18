@@ -1,0 +1,22 @@
+{
+    "name": "search",
+    "mcp_mode": "stdio",
+    "tool_manager": "qwen3",
+    "enable_thinking": false,
+    "config_path": "./envs/configs/mcp_tools.pydata",
+    "use_process_reward": false,
+    "model_type": "qwen3",
+    "tool_name_selected": [],
+    "max_prompt_length": 4096,
+    "enable_limiter": false,
+    "tool_timeout": 10,  
+    "max_concurrency": 10,
+    "use_storage_manager": false,
+    "max_size": 1000,
+    "cache": "single",
+    "persist": "false",
+    "eviction": "lru",
+    "persist_dir": "./cache",
+    "local_cache": "null",
+    "asyncio_run": false
+}

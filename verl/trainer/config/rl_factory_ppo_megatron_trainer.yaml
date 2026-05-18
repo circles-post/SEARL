@@ -1,0 +1,73 @@
+defaults:
+  - ppo_megatron_trainer
+  - rollout@reward_rollout.rollout: reward_rollout
+  - _self_
+
+actor_rollout_ref:
+  actor:
+    state_masking: False
+  
+  rollout:
+    top_p: 0.95
+    temperature: 0.7
+    max_turns: 2
+    stop: ["<|im_end|>",]
+    tool_response_length: 16384
+    val_kwargs:
+      top_p: 0.95
+    multi_turn:
+      format: 'hermes'
+  
+  env:
+    name: base
+    model_type: null
+    tool_manager: null
+    mcp_mode: stdio
+    tool_name_selected: []  # selected tools for using when call a sse MCP server; default [] will call all tools
+    config_path: envs/configs/mcp_tools.pydata
+    enable_thinking: True
+    max_prompt_length: 2048
+    use_process_reward: False
+    enable_limiter: False
+    tool_timeout: 10            # this is the timeout for each tool call
+    max_concurrency: 10         # this is the max concurrency for tool manager
+    parallel_sse_tool_call:
+      is_enabled: True
+      num_instances: 3
+    use_storage_manager: False
+    cache: single
+    persist: false
+    eviction: lru
+    max_size: 1000
+    persist_dir: ./cache
+    local_cache: null
+    mmtool: False
+    load_custom_chat_template: null
+
+
+
+trainer:
+  val_only: False # Whether to only run validation
+
+
+reward_rollout:
+  if_use_reward_rollout: false
+  rollout:
+    name: vllm
+    model_name: Qwen/QwQ-32B
+    mode: sync
+    temperature: 1.0
+    top_k: -1
+    top_p: 0.95
+    gpu_memory_utilization: 0.5
+    tensor_model_parallel_size: 2
+    prompt_length: ${data.max_prompt_length}
+    response_length: ${data.max_response_length}
+    load_format: dummy_dtensor
+    layered_summon: False
+    max_num_seqs: 1024
+    enable_chunked_prefill: True
+    use_shm: False
+    trust_remote_code: False
+    stop: ["<|im_end|>",]
+    seed: 0

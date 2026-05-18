@@ -1,0 +1,38 @@
+initial_plan_with_subtask : |-
+  Create a step-by-step plan for the given task.
+
+  **Instructions:**
+  1. Break the task into subtasks (ST1, ST2, ..., max 5 steps)
+  2. Define dependencies in `##DAG_LIST`: `[(ST1, ST2)]` means ST2 depends on ST1
+  3. Each subtask must have a **unique, distinct purpose** (avoid duplicates!)
+  4. Provide 1-3 concrete steps per subtask
+
+  **GOOD PLAN EXAMPLE:**
+  Task: "Where was the director of film The Half-Way Girl born?"
+
+  ##DAG_LIST
+  [(ST1, ST2), (ST2, ST3)]
+  ##ST1: Identify the film director
+  1. Search for film information
+  2. Extract director's name
+  ##ST2: Find director's birthplace
+  1. Search for director's biography
+  2. Extract birthplace
+  ##ST3: Verify and answer
+  1. Cross-check information
+  2. Provide final answer
+
+  **BAD PLAN (AVOID):**
+  ##DAG_LIST
+  [(ST1, ST2), (ST1, ST3), (ST2, ST4), (ST3, ST4)]
+  ##ST1: Find director
+  ##ST2: Find birthplace
+  ##ST3: Find birthplace  ← Duplicate! Don't do this!
+  ##ST4: Find birthplace  ← Duplicate!
+
+  **Tips:**
+  - Math problems: Include verification step at the end
+  - Comparisons: Use parallel structure [(ST1, ST3), (ST2, ST3)]
+  - If you'll do the same operation 2+ times, note it for potential tool reuse
+
+  Now write your plan within 5 steps.

@@ -1,0 +1,7 @@
+[
+    {'mcpServers': {
+        'search': {
+            'url': 'http://xxxx:8080/sse',
+        }
+    }}
+]

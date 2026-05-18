@@ -1,0 +1,26 @@
+initial_plan_with_subtask : |-
+  Create a step-by-step plan for the given task.
+  **Instructions:**
+  1.  Break the task into subtasks (ST1, ST2, ST3, ...). If the task is indivisible, use only ST1.
+  2.  Define subtask dependencies in a `##DAG_LIST`. Example: `[(ST1, ST2)]` means ST2 depends on ST1. For a single task, use `[(ST1)]`.
+  3.  For each subtask `##STn`, provide clear, actionable steps.
+  4.  The plan must only contain concrete actions. Do not include explanations or simulated code.
+  SUBTASKS EXAMPLE:
+  ##DAG_LIST
+  [(ST1, ST3), (ST1, ST2), (ST2, ST3)]
+  ##ST1:xxx
+  1. xxx.  
+  2. xxx.
+  ##ST2:xxx
+  1. xxx.  
+  2. xxx.  
+  3. xxx.
+  4. xxx.
+  ##ST3:xxx
+  1. xxx.  
+  2. xxx.  
+  3. xxx.
+  Previous is an example of generating subtasks, you are not required to solve the task within the plan itself; focus on outlining the steps.
+  Always verify your answers before providing them, provide the plan for verifying.
+  If you are uncertain about the task, you can plan for web search to gather more information.
+  Now, write a plan below to solve the task with in 5 steps.

@@ -1,0 +1,50 @@
+# Rollback Configuration for ToolUtilsRollback
+# This configuration enables error detection and automatic retry for tool execution failures
+
+rollback:
+  # Enable or disable the rollback mechanism
+  enable_rollback: true
+
+  # Maximum number of retry attempts per batch
+  # After max_retries, the batch will proceed even with errors
+  max_retries: 3
+
+  # Retry strategy:
+  # - "batch_redo": If any sample in batch fails, redo the entire batch
+  # - "sample_level": Only retry failed samples (not yet implemented)
+  retry_strategy: "batch_redo"
+
+  # Error types that should trigger a retry
+  # These match the error_type field returned by tools
+  retry_on_errors:
+    - "ImportError"        # Python import failures
+    - "SyntaxError"        # Code syntax errors
+    - "worker_timeout"     # Worker execution timeout
+    - "queue_timeout"      # Queue processing timeout
+    - "internal_error"     # Internal tool errors
+    - "NameError"          # Undefined variables
+    - "AttributeError"     # Missing attributes
+    - "TypeError"          # Type mismatches
+    - "ValueError"         # Invalid values
+    - "RuntimeError"       # Runtime exceptions
+    - "TimeoutError"       # General timeout errors
+
+  # Additional options (for future extensions)
+  # backoff_multiplier: 1.5  # Exponential backoff between retries
+  # log_errors: true          # Log all errors to file
+  # error_log_path: null      # Custom error log path
+
+# Example integration with existing config
+tool_utils:
+  # Use the rollback-enabled version
+  class_name: "ToolUtilsRollback"
+
+  # Pass rollback config to constructor
+  rollback_config: ${rollback}
+
+  # Standard tool utils config
+  prompt_length: 4096
+  response_length: 2596
+  tool_response_length: 2048
+  max_turns: 6
+  stop: ["<|im_end|>"]

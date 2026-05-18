@@ -1,0 +1,60 @@
+# Rollback Configuration - AGGRESSIVE OPTIMIZATION
+# 激进优化版本 - 完全禁用大部分 rollback
+# 适用场景：模型已经过一定训练，代码质量较稳定
+#
+# 策略：让模型直接承担错误后果，通过负奖励学习避免错误
+
+rollback:
+  # ⚠️ 激进优化: 禁用 rollback
+  # 让所有错误直接体现在奖励中，加速学习
+  enable_rollback: false
+
+  # 保留配置（不生效）
+  max_retries: 1
+  retry_strategy: "batch_redo"
+
+  # 即使禁用，也记录错误类型用于分析
+  retry_on_errors:
+    - "ImportError"
+    - "worker_timeout"
+    - "queue_timeout"
+    - "internal_error"
+
+# 工具配置
+tool_utils:
+  class_name: "ToolUtilsRollback"
+  rollback_config: ${rollback}
+
+  prompt_length: 4096
+  response_length: 2596
+  tool_response_length: 2048
+  max_turns: 6
+  stop: ["<|im_end|>"]
+
+# ⚠️ 重要: 必须配套强化奖励惩罚
+reward_config:
+  # 代码质量错误: 重度惩罚
+  syntax_error_penalty: -1.0
+  name_error_penalty: -0.8
+  type_error_penalty: -0.8
+
+  # 工具错误: 中度惩罚
+  import_error_penalty: -0.5
+  internal_error_penalty: -0.5
+
+  # 成功奖励
+  success_reward: 1.0
+
+  # Step-wise reward（过程奖励）
+  enable_process_reward: true
+
+# 监控配置
+monitoring:
+  log_all_errors: true
+  error_log_path: "logs/error_analysis/errors.jsonl"
+
+  # 每N个batch记录统计
+  stats_interval: 100
+
+  # 错误率阈值告警
+  error_rate_threshold: 0.25  # 超过25%就警告

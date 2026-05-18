@@ -1,0 +1,23 @@
+{
+  "rules": [
+    {
+      "type": "工具标签",
+      "label": "tool_call",
+      "requirements": [
+        {
+          "type": "format",
+          "config": {
+            "type": "json",
+            "example": "aaa",
+            "mode": "均值",
+            "coefficient": 1,
+            "grader_configs": null,
+            "grader": null
+          }
+        }
+      ]
+    }
+  ],
+  "version": "1.0",
+  "description": "SEARL奖赏定义配置"
+}
