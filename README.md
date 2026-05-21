@@ -98,7 +98,7 @@ If you find SEARL useful, please cite:
   year={2026}
 }
 ```
-
+For any inquiries, please contact fengxinshun@pjlab.org.cn.
 ## Acknowledgement
 
 This project builds on ideas and infrastructure from [veRL](https://github.com/volcengine/verl), [Search-R1](https://github.com/PeterGriffinJin/Search-R1), [RL-Factory](https://github.com/Simple-Efficient/RL-Factory), and [SandboxFusion](https://bytedance.github.io/SandboxFusion/docs/category/reference).
